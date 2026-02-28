@@ -19,7 +19,6 @@
             color:#cbd5e1;
             padding:12px 0;
             text-decoration:none;
-            font-weight:500;
         }
 
         .sidebar a:hover { color:white; }
@@ -40,15 +39,6 @@
             padding:20px;
             border-radius:12px;
             margin-top:20px;
-            box-shadow:0 4px 12px rgba(0,0,0,0.05);
-        }
-
-        .top-bar {
-            background:white;
-            padding:15px 25px;
-            box-shadow:0 2px 6px rgba(0,0,0,0.05);
-            margin-bottom:20px;
-            border-radius:8px;
         }
     </style>
 </head>
@@ -57,7 +47,6 @@
 <div class="container-fluid">
     <div class="row">
 
-        <!-- Sidebar -->
         <div class="col-md-2 sidebar">
             <h4>SABA System</h4>
             <hr>
@@ -65,11 +54,10 @@
             <a href="/">Logout</a>
         </div>
 
-        <!-- Main Content -->
         <div class="col-md-10 p-4">
 
-            <div class="top-bar d-flex justify-content-between">
-                <h5>Teacher Dashboard</h5>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4>Teacher Dashboard</h4>
                 <a href="/add_performance" class="btn btn-primary btn-sm">
                     + Add Student
                 </a>
@@ -110,9 +98,9 @@
 
             <!-- Student Table -->
             <div class="table-box">
-                <h5 class="mb-3">Student List</h5>
+                <h5>Student List</h5>
 
-                <table class="table table-hover">
+                <table class="table table-hover mt-3">
                     <thead>
                         <tr>
                             <th>Name</th>

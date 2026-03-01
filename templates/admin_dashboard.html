@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+
+    <style>
+        body {
+            margin:0;
+            font-family: Arial;
+            background:#f1f5f9;
+        }
+
+        .sidebar {
+            width:220px;
+            height:100vh;
+            background:#1e293b;
+            color:white;
+            position:fixed;
+            padding:20px;
+        }
+
+        .sidebar h2 {
+            color:white;
+        }
+
+        .sidebar a {
+            display:block;
+            color:#cbd5e1;
+            padding:10px 0;
+            text-decoration:none;
+        }
+
+        .sidebar a:hover {
+            color:white;
+        }
+
+        .main {
+            margin-left:240px;
+            padding:30px;
+        }
+
+        .card {
+            background:white;
+            padding:20px;
+            border-radius:10px;
+            margin-bottom:20px;
+            box-shadow:0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        table {
+            width:100%;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border:1px solid #ddd;
+        }
+
+        th, td {
+            padding:10px;
+            text-align:left;
+        }
+
+        th {
+            background:#f3f4f6;
+        }
+
+        .btn {
+            padding:8px 12px;
+            background:#4f46e5;
+            color:white;
+            border:none;
+            text-decoration:none;
+            border-radius:5px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="sidebar">
+    <h2>SABA Admin</h2>
+    <hr>
+    <a href="/admin">Dashboard</a>
+    <a href="/add_student">Add Student</a>
+    <a href="/logout">Logout</a>
+</div>
+
+<div class="main">
+
+    <h2>Admin Dashboard</h2>
+
+    <div class="card">
+        <h3>Department-wise Student Count</h3>
+        <table>
+            <tr>
+                <th>Department</th>
+                <th>Total Students</th>
+            </tr>
+
+            {% for d in dept_data %}
+            <tr>
+                <td>{{ d[0] }}</td>
+                <td>{{ d[1] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="card">
+        <h3>All Students Performance</h3>
+
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Department</th>
+                <th>Attendance</th>
+                <th>Marks</th>
+            </tr>
+
+            {% for s in students %}
+            <tr>
+                <td>{{ s[0] }}</td>
+                <td>{{ s[1] }}</td>
+                <td>{{ s[2] }}</td>
+                <td>{{ s[3] }}</td>
+                <td>{{ s[4] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+    </div>
+
+</div>
+
+</body>
+</html>

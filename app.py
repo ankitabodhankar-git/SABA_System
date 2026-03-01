@@ -1,136 +1,140 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, session
 import sqlite3
 
 app = Flask(__name__)
+app.secret_key = "secretkey"
 
 # ---------------- DATABASE ----------------
-
-def get_connection():
-    return sqlite3.connect("saba.db")
-
 def create_tables():
-    conn = get_connection()
+    conn = sqlite3.connect("saba.db")
     cursor = conn.cursor()
 
-    # Users table (for login)
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS users(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            email TEXT,
-            password TEXT,
-            role TEXT
-        )
+    CREATE TABLE IF NOT EXISTS users(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
+        email TEXT UNIQUE,
+        password TEXT,
+        role TEXT
+    )
     """)
 
-    # Students table (for performance)
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS students(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT,
-            email TEXT,
-            department TEXT,
-            attendance INTEGER,
-            marks INTEGER
-        )
+    CREATE TABLE IF NOT EXISTS students(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
+        department TEXT,
+        attendance INTEGER DEFAULT 0,
+        marks INTEGER DEFAULT 0
+    )
     """)
 
-    # Insert one teacher user if not exists
-    cursor.execute("SELECT * FROM users WHERE email=?", ("teacher@asmedu.org",))
+    # Default Admin
+    cursor.execute("SELECT * FROM users WHERE email='admin@asmedu.org'")
     if not cursor.fetchone():
-        cursor.execute("INSERT INTO users (email,password,role) VALUES (?,?,?)",
-                       ("teacher1@asmedu.org","1234","teacher"))
+        cursor.execute("""
+        INSERT INTO users (name,email,password,role)
+        VALUES (?,?,?,?)
+        """, ("Admin","admin@asmedu.org","admin123","admin"))
 
     conn.commit()
     conn.close()
 
 # ---------------- LOGIN ----------------
-
 @app.route("/", methods=["GET","POST"])
 def login():
     if request.method == "POST":
         email = request.form["email"]
         password = request.form["password"]
 
-        # College email validation
-        if not email.endswith("@asmedu.org"):
-            return render_template("login.html", error="Use college email only")
-
-        conn = get_connection()
+        conn = sqlite3.connect("saba.db")
         cursor = conn.cursor()
-        cursor.execute("SELECT role FROM users WHERE email=? AND password=?",
-                       (email,password))
+
+        cursor.execute("""
+        SELECT id, role FROM users
+        WHERE email=? AND password=?
+        """, (email,password))
+
         user = cursor.fetchone()
         conn.close()
 
         if user:
-            role = user[0]
-            return redirect(f"/{role}")
-        else:
-            return render_template("login.html", error="Invalid credentials")
+            session["user_id"] = user[0]
+            session["role"] = user[1]
+
+            if user[1] == "admin":
+                return redirect("/admin")
+
+        return render_template("login.html", error="Invalid Credentials")
 
     return render_template("login.html")
 
+# ---------------- ADMIN DASHBOARD ----------------
+@app.route("/admin")
+def admin():
+    if session.get("role") != "admin":
+        return redirect("/")
 
-# ---------------- TEACHER DASHBOARD ----------------
-
-@app.route("/teacher")
-def teacher():
-    conn = get_connection()
+    conn = sqlite3.connect("saba.db")
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM students")
+
+    # All students with performance
+    cursor.execute("""
+    SELECT users.name, users.email, students.department,
+           students.attendance, students.marks
+    FROM students
+    JOIN users ON students.user_id = users.id
+    """)
     students = cursor.fetchall()
+
+    # Department count
+    cursor.execute("""
+    SELECT department, COUNT(*)
+    FROM students
+    GROUP BY department
+    """)
+    dept_data = cursor.fetchall()
+
     conn.close()
 
-    total_students = len(students)
+    return render_template("admin_dashboard.html",
+                           students=students,
+                           dept_data=dept_data)
 
-    if total_students > 0:
-        avg_marks = sum(s[5] for s in students) / total_students
-    else:
-        avg_marks = 0
-
-    at_risk = 0
-    top_marks = 0
-
-    for s in students:
-        if s[4] < 60 or s[5] < 40:
-            at_risk += 1
-        if s[5] > top_marks:
-            top_marks = s[5]
-
-    return render_template(
-        "teacher_dashboard.html",
-        students=students,
-        total_students=total_students,
-        avg_marks=round(avg_marks,2),
-        at_risk=at_risk,
-        top_marks=top_marks
-    )
-
-# ---------------- ADD PERFORMANCE ----------------
-
-@app.route("/add_performance", methods=["GET","POST"])
-def add_performance():
+# ---------------- ADD STUDENT ----------------
+@app.route("/add_student", methods=["GET","POST"])
+def add_student():
     if request.method == "POST":
         name = request.form["name"]
         email = request.form["email"]
-        dept = request.form["department"]
-        attendance = request.form["attendance"]
-        marks = request.form["marks"]
+        department = request.form["department"]
 
-        conn = get_connection()
+        conn = sqlite3.connect("saba.db")
         cursor = conn.cursor()
+
         cursor.execute("""
-            INSERT INTO students(name,email,department,attendance,marks)
-            VALUES(?,?,?,?,?)
-        """,(name,email,dept,attendance,marks))
+        INSERT INTO users (name,email,password,role)
+        VALUES (?,?,?,?)
+        """, (name,email,"123","student"))
+
+        user_id = cursor.lastrowid
+
+        cursor.execute("""
+        INSERT INTO students (user_id,department,attendance,marks)
+        VALUES (?,?,?,?)
+        """, (user_id,department,0,0))
 
         conn.commit()
         conn.close()
 
-        return redirect("/teacher")
+        return redirect("/admin")
 
-    return render_template("add_performance.html")
+    return render_template("add_student.html")
 
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/")
 
 if __name__ == "__main__":
     create_tables()

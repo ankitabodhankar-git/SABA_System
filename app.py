@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, session
 import sqlite3
 
 app = Flask(__name__)
-app.secret_key = "secretkey"
+app.secret_key = "final_secret_key"
 
 # ---------------- DATABASE ----------------
 def create_tables():
@@ -29,7 +29,7 @@ def create_tables():
     )
     """)
 
-    # Default Admin
+    # Create default admin
     cursor.execute("SELECT * FROM users WHERE email='admin@asmedu.org'")
     if not cursor.fetchone():
         cursor.execute("""
@@ -49,12 +49,10 @@ def login():
 
         conn = sqlite3.connect("saba.db")
         cursor = conn.cursor()
-
         cursor.execute("""
         SELECT id, role FROM users
         WHERE email=? AND password=?
         """, (email,password))
-
         user = cursor.fetchone()
         conn.close()
 
@@ -64,6 +62,8 @@ def login():
 
             if user[1] == "admin":
                 return redirect("/admin")
+            elif user[1] == "student":
+                return redirect("/student")
 
         return render_template("login.html", error="Invalid Credentials")
 
@@ -78,7 +78,6 @@ def admin():
     conn = sqlite3.connect("saba.db")
     cursor = conn.cursor()
 
-    # All students with performance
     cursor.execute("""
     SELECT users.name, users.email, students.department,
            students.attendance, students.marks
@@ -87,19 +86,9 @@ def admin():
     """)
     students = cursor.fetchall()
 
-    # Department count
-    cursor.execute("""
-    SELECT department, COUNT(*)
-    FROM students
-    GROUP BY department
-    """)
-    dept_data = cursor.fetchall()
-
     conn.close()
 
-    return render_template("admin_dashboard.html",
-                           students=students,
-                           dept_data=dept_data)
+    return render_template("admin_dashboard.html", students=students)
 
 # ---------------- ADD STUDENT ----------------
 @app.route("/add_student", methods=["GET","POST"])
@@ -120,9 +109,9 @@ def add_student():
         user_id = cursor.lastrowid
 
         cursor.execute("""
-        INSERT INTO students (user_id,department,attendance,marks)
-        VALUES (?,?,?,?)
-        """, (user_id,department,0,0))
+        INSERT INTO students (user_id,department)
+        VALUES (?,?)
+        """, (user_id,department))
 
         conn.commit()
         conn.close()
@@ -131,6 +120,23 @@ def add_student():
 
     return render_template("add_student.html")
 
+# ---------------- STUDENT DASHBOARD ----------------
+@app.route("/student")
+def student():
+    if session.get("role") != "student":
+        return redirect("/")
+
+    conn = sqlite3.connect("saba.db")
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT name FROM users WHERE id=?", (session["user_id"],))
+    user = cursor.fetchone()
+
+    conn.close()
+
+    return render_template("student_dashboard.html", name=user[0])
+
+# ---------------- LOGOUT ----------------
 @app.route("/logout")
 def logout():
     session.clear()

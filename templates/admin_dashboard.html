@@ -1,136 +1,181 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Admin Dashboard</title>
+    <title>SABA Admin Dashboard</title>
 
     <style>
-        body {
-            margin:0;
-            font-family: Arial;
-            background:#f1f5f9;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
         }
 
+        body {
+            display: flex;
+            background: #f4f6f9;
+        }
+
+        /* Sidebar */
         .sidebar {
-            width:220px;
-            height:100vh;
-            background:#1e293b;
-            color:white;
-            position:fixed;
-            padding:20px;
+            width: 230px;
+            height: 100vh;
+            background: #1e293b;
+            padding: 20px;
+            color: white;
         }
 
         .sidebar h2 {
-            color:white;
+            margin-bottom: 30px;
         }
 
         .sidebar a {
-            display:block;
-            color:#cbd5e1;
-            padding:10px 0;
-            text-decoration:none;
+            display: block;
+            padding: 10px;
+            color: #cbd5e1;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-bottom: 10px;
         }
 
         .sidebar a:hover {
-            color:white;
+            background: #334155;
+            color: white;
         }
 
+        /* Main */
         .main {
-            margin-left:240px;
-            padding:30px;
+            flex: 1;
+            padding: 30px;
+        }
+
+        .header {
+            margin-bottom: 25px;
+        }
+
+        .cards {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
         }
 
         .card {
-            background:white;
-            padding:20px;
-            border-radius:10px;
-            margin-bottom:20px;
-            box-shadow:0 4px 10px rgba(0,0,0,0.05);
+            flex: 1;
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+            text-align: center;
         }
+
+        .blue { background: #3b82f6; }
+        .green { background: #10b981; }
+        .purple { background: #8b5cf6; }
 
         table {
-            width:100%;
+            width: 100%;
             border-collapse: collapse;
-        }
-
-        table, th, td {
-            border:1px solid #ddd;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
         }
 
         th, td {
-            padding:10px;
-            text-align:left;
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
         }
 
         th {
-            background:#f3f4f6;
+            background: #e2e8f0;
+        }
+
+        tr:hover {
+            background: #f1f5f9;
         }
 
         .btn {
-            padding:8px 12px;
-            background:#4f46e5;
-            color:white;
-            border:none;
-            text-decoration:none;
-            border-radius:5px;
+            display: inline-block;
+            padding: 8px 14px;
+            background: #10b981;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-bottom: 20px;
         }
     </style>
 </head>
 
 <body>
 
+<!-- Sidebar -->
 <div class="sidebar">
     <h2>SABA Admin</h2>
-    <hr>
     <a href="/admin">Dashboard</a>
     <a href="/add_student">Add Student</a>
     <a href="/logout">Logout</a>
 </div>
 
+<!-- Main Content -->
 <div class="main">
 
-    <h2>Admin Dashboard</h2>
-
-    <div class="card">
-        <h3>Department-wise Student Count</h3>
-        <table>
-            <tr>
-                <th>Department</th>
-                <th>Total Students</th>
-            </tr>
-
-            {% for d in dept_data %}
-            <tr>
-                <td>{{ d[0] }}</td>
-                <td>{{ d[1] }}</td>
-            </tr>
-            {% endfor %}
-        </table>
+    <div class="header">
+        <h1>Admin Dashboard</h1>
     </div>
 
-    <div class="card">
-        <h3>All Students Performance</h3>
+    <!-- SUMMARY CARDS -->
+    <div class="cards">
+        <div class="card blue">
+            <h2>{{ students|length }}</h2>
+            <p>Total Students</p>
+        </div>
 
-        <table>
-            <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Department</th>
-                <th>Attendance</th>
-                <th>Marks</th>
-            </tr>
-
-            {% for s in students %}
-            <tr>
-                <td>{{ s[0] }}</td>
-                <td>{{ s[1] }}</td>
-                <td>{{ s[2] }}</td>
-                <td>{{ s[3] }}</td>
-                <td>{{ s[4] }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-
+        <div class="card green">
+            <h2>
+                {{ dept_count|length }}
+            </h2>
+            <p>Total Departments</p>
+        </div>
     </div>
+
+    <!-- Department Wise Count -->
+    <h2>Department Wise Student Count</h2>
+
+    <table>
+        <tr>
+            <th>Department</th>
+            <th>Total Students</th>
+        </tr>
+
+        {% for d in dept_count %}
+        <tr>
+            <td>{{ d[0] }}</td>
+            <td>{{ d[1] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <br>
+
+    <a href="/add_student" class="btn">+ Add Student</a>
+
+    <!-- Student List -->
+    <h2>All Students</h2>
+
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Department</th>
+        </tr>
+
+        {% for s in students %}
+        <tr>
+            <td>{{ s[1] }}</td>
+            <td>{{ s[2] }}</td>
+            <td>{{ s[3] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
 
 </div>
 

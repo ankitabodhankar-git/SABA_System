@@ -143,6 +143,38 @@ def teacher_dashboard():
         return redirect("/")
     return render_template("teacher_dashboard.html")
 
+# ---------------- ADD TEACHER ----------------
+@app.route("/add_teacher", methods=["GET","POST"])
+def add_teacher():
+
+    if session.get("role") != "admin":
+        return redirect("/")
+
+    if request.method == "POST":
+
+        name = request.form["name"]
+        email = request.form["email"]
+        password = request.form["password"]
+        department = request.form["department"]
+
+        if not email.endswith("@asmedu.org"):
+            return "Only college email allowed"
+
+        conn = sqlite3.connect("saba.db")
+        cursor = conn.cursor()
+
+        cursor.execute("""
+        INSERT INTO users (name,email,password,role,department)
+        VALUES (?,?,?,?,?)
+        """,(name,email,password,"teacher",department))
+
+        conn.commit()
+        conn.close()
+
+        return redirect("/admin")
+
+    return render_template("add_teacher.html")
+
 # ---------------- ADD PERFORMANCE ----------------
 @app.route("/add_performance", methods=["GET","POST"])
 def add_performance():

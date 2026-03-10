@@ -139,9 +139,57 @@ def add_student():
 # ---------------- TEACHER DASHBOARD ----------------
 @app.route("/teacher")
 def teacher_dashboard():
+
     if session.get("role") != "teacher":
         return redirect("/")
-    return render_template("teacher_dashboard.html")
+
+    conn = sqlite3.connect("saba.db")
+    cursor = conn.cursor()
+
+    # total students
+    cursor.execute("SELECT COUNT(*) FROM users WHERE role='student'")
+    total_students = cursor.fetchone()[0]
+
+    # risk counts
+    cursor.execute("SELECT COUNT(*) FROM semester_performance WHERE risk_status='Good'")
+    good = cursor.fetchone()[0]
+
+    cursor.execute("SELECT COUNT(*) FROM semester_performance WHERE risk_status='Average'")
+    avg = cursor.fetchone()[0]
+
+    cursor.execute("SELECT COUNT(*) FROM semester_performance WHERE risk_status='At Risk'")
+    risk = cursor.fetchone()[0]
+
+    # student list
+    cursor.execute("SELECT id,name,department FROM users WHERE role='student'")
+    students = cursor.fetchall()
+
+    conn.close()
+
+    return render_template(
+        "teacher_dashboard.html",
+        total_students=total_students,
+        good=good,
+        avg=avg,
+        risk=risk,
+        students=students
+    )
+@app.route("/students")
+def student_list():
+
+    if session.get("role") != "teacher":
+        return redirect("/")
+
+    conn = sqlite3.connect("saba.db")
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT id,name,department FROM users WHERE role='student'")
+    students = cursor.fetchall()
+
+    conn.close()
+
+    return render_template("student_list.html", students=students)
+
 
 # ---------------- ADD TEACHER ----------------
 @app.route("/add_teacher", methods=["GET","POST"])
@@ -178,12 +226,16 @@ def add_teacher():
 # ---------------- ADD PERFORMANCE ----------------
 @app.route("/add_performance", methods=["GET","POST"])
 def add_performance():
+
     if session.get("role") != "teacher":
         return redirect("/")
 
+    student_id = request.args.get("student_id")
+
     if request.method == "POST":
-        student_id = request.form["student_id"]
-        semester = int(request.form["semester"])
+
+        student_id = request.form.get("student_id")
+        semester = request.form["semester"]
         attendance = int(request.form["attendance"])
         marks = int(request.form["marks"])
         behaviour = int(request.form["behaviour"])
@@ -204,14 +256,14 @@ def add_performance():
         INSERT INTO semester_performance
         (student_id,semester,attendance,marks,behaviour,overall_score,risk_status)
         VALUES (?,?,?,?,?,?,?)
-        """, (student_id,semester,attendance,marks,behaviour,overall,risk))
+        """,(student_id,semester,attendance,marks,behaviour,overall,risk))
 
         conn.commit()
         conn.close()
 
         return redirect("/teacher")
 
-    return render_template("add_performance.html")
+    return render_template("add_performance.html", student_id=student_id)
 
 # ---------------- STUDENT DASHBOARD ----------------
 @app.route("/student")

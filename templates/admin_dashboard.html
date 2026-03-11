@@ -17,10 +17,12 @@ font-family:Arial;
 background:#f4f6f9;
 }
 
+/* Sidebar */
+
 .sidebar{
 width:220px;
 height:100vh;
-background:#2c3e50;
+background:#1f2a38;
 position:fixed;
 color:white;
 padding-top:20px;
@@ -42,15 +44,20 @@ text-decoration:none;
 background:#34495e;
 }
 
+/* Main */
+
 .main{
 margin-left:220px;
-padding:20px;
+padding:30px;
 }
+
+/* Cards */
 
 .card-box{
 padding:20px;
+border-radius:10px;
 color:white;
-border-radius:8px;
+text-align:center;
 }
 
 .students{
@@ -58,7 +65,11 @@ background:#3498db;
 }
 
 .dept{
-background:#27ae60;
+background:#2ecc71;
+}
+
+.teachers{
+background:#e67e22;
 }
 
 </style>
@@ -67,24 +78,22 @@ background:#27ae60;
 
 <body>
 
-<!-- SIDEBAR -->
+<!-- Sidebar -->
 
 <div class="sidebar">
 
-<h4>Admin Panel</h4>
-
+<h4>SABA System</h4>
 <a href="/admin">Dashboard</a>
-
+<a href="/student_list">Student List</a>
+<a href="/teacher_list">Teacher List</a>
 <a href="/add_students">Add Student</a>
-
 <a href="/add_teacher">Add Teacher</a>
-
 <a href="/logout">Logout</a>
 
 </div>
 
 
-<!-- MAIN CONTENT -->
+<!-- Main Content -->
 
 <div class="main">
 
@@ -92,25 +101,37 @@ background:#27ae60;
 
 <div class="row mt-4">
 
-<div class="col-md-6">
+<div class="col-md-4">
 
 <div class="card-box students">
 
 <h5>Total Students</h5>
 
-<h3>{{ students|length }}</h3>
+<h2>{{ students|length }}</h2>
 
 </div>
 
 </div>
 
-<div class="col-md-6">
+<div class="col-md-4">
 
 <div class="card-box dept">
 
 <h5>Total Departments</h5>
 
-<h3>{{ dept_count|length }}</h3>
+<h2>{{ dept_count|length }}</h2>
+
+</div>
+
+</div>
+
+<div class="col-md-4">
+
+<div class="card-box teachers">
+
+<h5>Total Teachers</h5>
+
+<h2>{{ teacher_count }}</h2>
 
 </div>
 
@@ -121,134 +142,51 @@ background:#27ae60;
 
 <hr>
 
-<h4>Department Wise Students</h4>
+<h4>Department Analysis</h4>
 
-<table class="table table-bordered">
-
-<tr>
-
-<th>Department</th>
-
-<th>Students</th>
-
-</tr>
-
-{% for d in dept_count %}
-
-<tr>
-
-<td>{{ d[0] }}</td>
-
-<td>{{ d[1] }}</td>
-
-</tr>
-
-{% endfor %}
-
-</table>
-
-
-<hr>
-
-<h4>Department Analysis Graph</h4>
-
+<div style="width:400px; height:250px;">
 <canvas id="deptChart"></canvas>
-
-
-<hr>
-
-<h4>All Students</h4>
-
-<table class="table table-striped">
-
-<tr>
-
-<th>ID</th>
-
-<th>Name</th>
-
-<th>Email</th>
-
-<th>Department</th>
-
-</tr>
-
-{% for s in students %}
-
-<tr>
-
-<td>{{ s[0] }}</td>
-
-<td>{{ s[1] }}</td>
-
-<td>{{ s[2] }}</td>
-
-<td>{{ s[3] }}</td>
-
-</tr>
-
-{% endfor %}
-
-</table>
+</div>
 
 </div>
 
 
 <script>
 
-let departments = [];
-
-let counts = [];
+let departments=[];
+let counts=[];
 
 {% for d in dept_count %}
 
 departments.push("{{ d[0] }}");
-
 counts.push({{ d[1] }});
 
 {% endfor %}
 
+const ctx=document.getElementById('deptChart');
 
-const ctx = document.getElementById('deptChart');
+new Chart(ctx,{
 
-new Chart(ctx, {
+type:'bar',
 
-type: 'bar',
+data:{
+labels:departments,
 
-data: {
-
-labels: departments,
-
-datasets: [{
-
-label: 'Students per Department',
-
-data: counts,
-
-backgroundColor: '#3498db'
-
+datasets:[{
+label:'Students per Department',
+data:counts,
+backgroundColor:'#3498db'
 }]
-
 },
 
-options: {
-
-scales: {
-
-y: {
-
-beginAtZero:true
-
-}
-
-}
-
+options:{
+responsive:true,
+maintainAspectRatio:false
 }
 
 });
 
 </script>
-
 
 </body>
 </html>

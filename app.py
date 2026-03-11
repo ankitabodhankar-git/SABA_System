@@ -99,13 +99,18 @@ def admin_dashboard():
     GROUP BY department
     """)
     dept_count = cursor.fetchall()
+ # teacher count
+    cursor.execute("SELECT COUNT(*) FROM users WHERE role='teacher'")
+    teacher_count = cursor.fetchone()[0]
 
     conn.close()
 
-    return render_template("admin_dashboard.html",
-                           students=students,
-                           dept_count=dept_count)
-
+    return render_template(
+        "admin_dashboard.html",
+        students=students,
+        dept_count=dept_count,
+        teacher_count=teacher_count
+    )
 # ---------------- ADD STUDENT ----------------
 @app.route("/add_student", methods=["GET","POST"])
 def add_student():
@@ -174,7 +179,7 @@ def teacher_dashboard():
         risk=risk,
         students=students
     )
-@app.route("/students")
+@app.route("/student")
 def student_list():
 
     if session.get("role") != "teacher":
@@ -190,6 +195,29 @@ def student_list():
 
     return render_template("student_list.html", students=students)
 
+
+
+
+@app.route("/teacher_list")
+def teacher_list():
+
+    if session.get("role") != "admin":
+        return redirect("/")
+
+    conn = sqlite3.connect("saba.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    SELECT name, email, department
+    FROM users
+    WHERE role='teacher'
+    """)
+
+    teachers = cursor.fetchall()
+
+    conn.close()
+
+    return render_template("teacher_list.html", teachers=teachers)
 
 # ---------------- ADD TEACHER ----------------
 @app.route("/add_teacher", methods=["GET","POST"])

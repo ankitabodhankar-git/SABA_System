@@ -113,33 +113,37 @@ def admin_dashboard():
         teacher_count=teacher_count
     )
 # ---------------- ADD STUDENT ----------------
-@app.route("/add_students", methods=["GET","POST"])
+@app.route("/add_student", methods=["GET","POST"])
 def add_student():
+
     if session.get("role") != "admin":
         return redirect("/")
 
     if request.method == "POST":
+
         name = request.form["name"]
         email = request.form["email"]
         password = request.form["password"]
         department = request.form["department"]
         year = request.form["year"]
 
-    if not email.endswith("@asmedu.org"):
-        return "Only college email allowed"
+        if not email.endswith("@asmedu.org"):
+            return "Only college email allowed"
 
-    conn = sqlite3.connect("saba.db")
-    cursor = conn.cursor()
+        conn = sqlite3.connect("saba.db")
+        cursor = conn.cursor()
 
-    cursor.execute("""
-    INSERT INTO users (name,email,password,role,department,year)
-    VALUES (?,?,?,?,?,?)
-    """,(name,email,password,"student",department,year))
+        cursor.execute("""
+        INSERT INTO users (name,email,password,role,department,year)
+        VALUES (?,?,?,?,?,?)
+        """,(name,email,password,"student",department,year))
 
-    conn.commit()
-    conn.close()
+        conn.commit()
+        conn.close()
 
-    return redirect("/admin")
+        return redirect("/admin")
+
+    return render_template("add_student.html")
 
 # ---------------- TEACHER DASHBOARD ----------------
 @app.route("/teacher")

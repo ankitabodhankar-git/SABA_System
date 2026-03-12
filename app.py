@@ -12,13 +12,14 @@ def create_tables():
     # USERS TABLE
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS users(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT,
-        email TEXT UNIQUE,
-        password TEXT,
-        role TEXT,
-        department TEXT
-    )
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    email TEXT UNIQUE,
+    password TEXT,
+    role TEXT,
+    department TEXT,
+    year TEXT
+)
     """)
 
     # SEMESTER PERFORMANCE TABLE
@@ -39,9 +40,9 @@ def create_tables():
     cursor.execute("SELECT * FROM users WHERE email='admin@asmedu.org'")
     if not cursor.fetchone():
         cursor.execute("""
-        INSERT INTO users (name,email,password,role,department)
-        VALUES (?,?,?,?,?)
-        """, ("Admin","admin@asmedu.org","admin123","admin","ADMIN"))
+INSERT INTO users (name,email,password,role,department,year)
+VALUES (?,?,?,?,?,?)
+""", ("Admin","admin@asmedu.org","admin123","admin","ADMIN","Admin"))
 
     conn.commit()
     conn.close()
@@ -112,7 +113,7 @@ def admin_dashboard():
         teacher_count=teacher_count
     )
 # ---------------- ADD STUDENT ----------------
-@app.route("/add_student", methods=["GET","POST"])
+@app.route("/add_students", methods=["GET","POST"])
 def add_student():
     if session.get("role") != "admin":
         return redirect("/")
@@ -122,24 +123,23 @@ def add_student():
         email = request.form["email"]
         password = request.form["password"]
         department = request.form["department"]
+        year = request.form["year"]
 
-        if not email.endswith("@asmedu.org"):
-            return "Only college email allowed"
+    if not email.endswith("@asmedu.org"):
+        return "Only college email allowed"
 
-        conn = sqlite3.connect("saba.db")
-        cursor = conn.cursor()
+    conn = sqlite3.connect("saba.db")
+    cursor = conn.cursor()
 
-        cursor.execute("""
-        INSERT INTO users (name,email,password,role,department)
-        VALUES (?,?,?,?,?)
-        """, (name,email,password,"student",department))
+    cursor.execute("""
+    INSERT INTO users (name,email,password,role,department,year)
+    VALUES (?,?,?,?,?,?)
+    """,(name,email,password,"student",department,year))
 
-        conn.commit()
-        conn.close()
+    conn.commit()
+    conn.close()
 
-        return redirect("/admin")
-
-    return render_template("add_student.html")
+    return redirect("/admin")
 
 # ---------------- TEACHER DASHBOARD ----------------
 @app.route("/teacher")
@@ -179,22 +179,33 @@ def teacher_dashboard():
         risk=risk,
         students=students
     )
-@app.route("/student")
+
+
+@app.route("/student_list")
 def student_list():
 
-    if session.get("role") != "teacher":
+    if session.get("role") != "admin":
         return redirect("/")
 
     conn = sqlite3.connect("saba.db")
     cursor = conn.cursor()
 
-    cursor.execute("SELECT id,name,department FROM users WHERE role='student'")
-    students = cursor.fetchall()
+    cursor.execute("SELECT name,department,year FROM users WHERE role='student'")
+    data = cursor.fetchall()
 
     conn.close()
 
-    return render_template("student_list.html", students=students)
+    students_by_dept = {}
 
+    for name, dept in data:
+        if dept not in students_by_dept:
+            students_by_dept[dept] = []
+        students_by_dept[dept].append(name)
+
+    return render_template(
+        "student_list.html",
+        students_by_dept=students_by_dept
+    )
 
 
 

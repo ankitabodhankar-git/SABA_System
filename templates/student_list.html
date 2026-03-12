@@ -10,15 +10,14 @@ href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 <style>
 
 body{
-margin:0;
-font-family:Arial;
 background:#f4f6f9;
+font-family:Arial;
 }
 
 .sidebar{
 width:220px;
 height:100vh;
-background:#1f2a38;
+background:#2c3e50;
 position:fixed;
 color:white;
 padding-top:20px;
@@ -45,6 +44,13 @@ margin-left:220px;
 padding:30px;
 }
 
+.card-box{
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
 </style>
 
 </head>
@@ -55,64 +61,47 @@ padding:30px;
 
 <div class="sidebar">
 
-<h4>SABA System</h4>
+<h4>Admin Panel</h4>
 
-<a href="/teacher">Dashboard</a>
+<a href="/admin">Dashboard</a>
+<a href="/student_list">Student List</a>
+<a href="/teacher_list">Teacher List</a>
 
-<a href="/students">Student List</a>
 
-<a href="/profile">Profile</a>
-
-<a href="/logout">Logout</a>
 
 </div>
 
-<!-- Main Content -->
+<!-- Main -->
 
 <div class="main">
 
 <h2>Student List</h2>
 
-<table class="table table-bordered mt-4">
+<div class="card-box">
 
-<thead>
+<table class="table table-bordered">
 
 <tr>
-<th>Name</th>
 <th>Department</th>
-<th>Action</th>
+<th>Student Name</th>
+<th>Year</th>
 </tr>
-
-</thead>
-
-<tbody>
 
 {% for s in students %}
 
 <tr>
 
 <td>{{ s[1] }}</td>
-
+<td>{{ s[0] }}</td>
 <td>{{ s[2] }}</td>
-
-<td>
-
-<a href="/add_performance?student_id={{ s[0] }}"
-class="btn btn-success btn-sm">
-
-Add Performance
-
-</a>
-
-</td>
 
 </tr>
 
 {% endfor %}
 
-</tbody>
-
 </table>
+
+</div>
 
 </div>
 

@@ -60,8 +60,6 @@ box-shadow:0 0 10px rgba(0,0,0,0.1);
 
 <body>
 
-<!-- SIDEBAR -->
-
 <div class="sidebar">
 
 <h4>Admin Panel</h4>
@@ -74,9 +72,6 @@ box-shadow:0 0 10px rgba(0,0,0,0.1);
 
 </div>
 
-
-<!-- MAIN CONTENT -->
-
 <div class="main">
 
 <h2 class="text-center mb-4">Add Student</h2>
@@ -86,61 +81,32 @@ box-shadow:0 0 10px rgba(0,0,0,0.1);
 <form method="POST">
 
 <div class="mb-3">
-
 <label>Name</label>
-
-<input type="text"
-name="name"
-class="form-control"
-required>
-
+<input type="text" name="name" class="form-control" required>
 </div>
 
 
 <div class="mb-3">
-
-<label>Email</label>
-
-<input type="email"
-name="email"
-class="form-control"
-placeholder="student@asmedu.org"
-required>
-
+<label> Password</label>
+<input type="password" name="password" class="form-control"
+placeholder="Temporary password for first login" required>
 </div>
-
-
-<div class="mb-3">
-
-<label>Password</label>
-
-<input type="password"
-name="password"
-class="form-control"
-
-required>
-
-</div>
-
 
 <div class="mb-3">
 
 <label>Department</label>
 
-<select name="department"
-class="form-control">
+<select name="department" class="form-control">
 
 <option value="BBA">BBA</option>
-
 <option value="BBACA">BBACA</option>
-
 <option value="BBAIB">BBAIB</option>
-
 <option value="BSC">BSC</option>
-
 <option value="BCOM">BCOM</option>
 
 </select>
+
+</div>
 
 <div class="mb-3">
 
@@ -156,14 +122,8 @@ class="form-control">
 
 </div>
 
-</div>
-
-
-<button type="submit"
-class="btn btn-primary w-100">
-
+<button type="submit" class="btn btn-primary w-100">
 Add Student
-
 </button>
 
 </form>

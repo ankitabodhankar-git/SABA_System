@@ -9,7 +9,6 @@ def create_tables():
     conn = sqlite3.connect("saba.db")
     cursor = conn.cursor()
 
-    # USERS TABLE
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS users(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -22,7 +21,6 @@ def create_tables():
 )
     """)
 
-    # SEMESTER PERFORMANCE TABLE
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS semester_performance(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -36,7 +34,6 @@ def create_tables():
     )
     """)
 
-    # DEFAULT ADMIN
     cursor.execute("SELECT * FROM users WHERE email='admin@asmedu.org'")
     if not cursor.fetchone():
         cursor.execute("""
@@ -47,10 +44,13 @@ VALUES (?,?,?,?,?,?)
     conn.commit()
     conn.close()
 
+
 # ---------------- LOGIN ----------------
 @app.route("/", methods=["GET","POST"])
 def login():
+
     if request.method == "POST":
+
         email = request.form["email"]
         password = request.form["password"]
 
@@ -59,19 +59,24 @@ def login():
 
         conn = sqlite3.connect("saba.db")
         cursor = conn.cursor()
+
         cursor.execute("SELECT id,role FROM users WHERE email=? AND password=?",
                        (email,password))
+
         user = cursor.fetchone()
         conn.close()
 
         if user:
+
             session["user_id"] = user[0]
             session["role"] = user[1]
 
             if user[1] == "admin":
                 return redirect("/admin")
+
             elif user[1] == "teacher":
                 return redirect("/teacher")
+
             elif user[1] == "student":
                 return redirect("/student")
 
@@ -79,20 +84,20 @@ def login():
 
     return render_template("login.html")
 
+
 # ---------------- ADMIN DASHBOARD ----------------
 @app.route("/admin")
 def admin_dashboard():
+
     if session.get("role") != "admin":
         return redirect("/")
 
     conn = sqlite3.connect("saba.db")
     cursor = conn.cursor()
 
-    # All students
     cursor.execute("SELECT id,name,email,department FROM users WHERE role='student'")
     students = cursor.fetchall()
 
-    # Department wise count
     cursor.execute("""
     SELECT department, COUNT(*)
     FROM users
@@ -100,7 +105,7 @@ def admin_dashboard():
     GROUP BY department
     """)
     dept_count = cursor.fetchall()
- # teacher count
+
     cursor.execute("SELECT COUNT(*) FROM users WHERE role='teacher'")
     teacher_count = cursor.fetchone()[0]
 
@@ -112,6 +117,8 @@ def admin_dashboard():
         dept_count=dept_count,
         teacher_count=teacher_count
     )
+
+
 # ---------------- ADD STUDENT ----------------
 @app.route("/add_student", methods=["GET","POST"])
 def add_student():
@@ -122,7 +129,9 @@ def add_student():
     if request.method == "POST":
 
         name = request.form["name"]
-        email = request.form["email"]
+        # auto email generated
+        username = name.lower().replace(" ", ".")
+        email = username + "@asmedu.org"
         password = request.form["password"]
         department = request.form["department"]
         year = request.form["year"]
@@ -141,9 +150,10 @@ def add_student():
         conn.commit()
         conn.close()
 
-        return redirect("/admin")
+        return render_template("add_student.html", generated_email=email)
 
     return render_template("add_student.html")
+
 
 # ---------------- TEACHER DASHBOARD ----------------
 @app.route("/teacher")
@@ -155,11 +165,9 @@ def teacher_dashboard():
     conn = sqlite3.connect("saba.db")
     cursor = conn.cursor()
 
-    # total students
     cursor.execute("SELECT COUNT(*) FROM users WHERE role='student'")
     total_students = cursor.fetchone()[0]
 
-    # risk counts
     cursor.execute("SELECT COUNT(*) FROM semester_performance WHERE risk_status='Good'")
     good = cursor.fetchone()[0]
 
@@ -169,7 +177,6 @@ def teacher_dashboard():
     cursor.execute("SELECT COUNT(*) FROM semester_performance WHERE risk_status='At Risk'")
     risk = cursor.fetchone()[0]
 
-    # student list
     cursor.execute("SELECT id,name,department FROM users WHERE role='student'")
     students = cursor.fetchall()
 
@@ -185,6 +192,7 @@ def teacher_dashboard():
     )
 
 
+# ---------------- STUDENT LIST ----------------
 @app.route("/student_list")
 def student_list():
 
@@ -201,7 +209,7 @@ def student_list():
 
     students_by_dept = {}
 
-    for name, dept in data:
+    for name, dept, year in data:   # FIXED
         if dept not in students_by_dept:
             students_by_dept[dept] = []
         students_by_dept[dept].append(name)
@@ -212,7 +220,7 @@ def student_list():
     )
 
 
-
+# ---------------- TEACHER LIST ----------------
 @app.route("/teacher_list")
 def teacher_list():
 
@@ -234,6 +242,7 @@ def teacher_list():
 
     return render_template("teacher_list.html", teachers=teachers)
 
+
 # ---------------- ADD TEACHER ----------------
 @app.route("/add_teacher", methods=["GET","POST"])
 def add_teacher():
@@ -244,7 +253,9 @@ def add_teacher():
     if request.method == "POST":
 
         name = request.form["name"]
-        email = request.form["email"]
+        # auto geneted email
+        username = name.lower().replace(" ", ".")
+        email = username + "@asmedu.org"
         password = request.form["password"]
         department = request.form["department"]
 
@@ -255,9 +266,9 @@ def add_teacher():
         cursor = conn.cursor()
 
         cursor.execute("""
-        INSERT INTO users (name,email,password,role,department)
-        VALUES (?,?,?,?,?)
-        """,(name,email,password,"teacher",department))
+        INSERT INTO users (name,email,password,role,department,year)
+        VALUES (?,?,?,?,?,?)
+        """,(name,email,password,"teacher",department,"NA"))
 
         conn.commit()
         conn.close()
@@ -265,6 +276,7 @@ def add_teacher():
         return redirect("/admin")
 
     return render_template("add_teacher.html")
+
 
 # ---------------- ADD PERFORMANCE ----------------
 @app.route("/add_performance", methods=["GET","POST"])
@@ -308,9 +320,11 @@ def add_performance():
 
     return render_template("add_performance.html", student_id=student_id)
 
+
 # ---------------- STUDENT DASHBOARD ----------------
 @app.route("/student")
 def student_dashboard():
+
     if session.get("role") != "student":
         return redirect("/")
 
@@ -324,16 +338,53 @@ def student_dashboard():
     """, (session["user_id"],))
 
     performance = cursor.fetchall()
+
     conn.close()
 
     return render_template("student_dashboard.html",
                            performance=performance)
 
+
+
+@app.route("/change_password", methods=["GET","POST"])
+def change_password():
+
+    if "user_id" not in session:
+        return redirect("/")
+
+    if request.method == "POST":
+
+        old_password = request.form["old_password"]
+        new_password = request.form["new_password"]
+
+        conn = sqlite3.connect("saba.db")
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT password FROM users WHERE id=?",
+                       (session["user_id"],))
+
+        user = cursor.fetchone()
+
+        if user and user[0] == old_password:
+
+            cursor.execute("UPDATE users SET password=? WHERE id=?",
+                           (new_password,session["user_id"]))
+
+            conn.commit()
+            conn.close()
+
+            return redirect("/")
+
+        conn.close()
+        return "Wrong current password"
+
+    return render_template("change_password.html")
 # ---------------- LOGOUT ----------------
 @app.route("/logout")
 def logout():
     session.clear()
     return redirect("/")
+
 
 if __name__ == "__main__":
     create_tables()

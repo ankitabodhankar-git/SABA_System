@@ -161,7 +161,7 @@ background:#e67e22;
 let departments=[];
 let counts=[];
 
-{% for d in dept_count %}
+{ % for d in dept_count % }
 
 departments.push("{{ d[0] }}");
 counts.push({{ d[1] }});
@@ -178,10 +178,7 @@ data:{
 labels:departments,
 
 datasets:[{
-label:'Students per Department',
-data:counts,
-backgroundColor:'#3498db'
-}]
+label:'Students per Department',data:counts,backgroundColor:'#3498db'}]
 },
 
 options:{

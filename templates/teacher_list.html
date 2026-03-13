@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Teacher List</title>
+
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:#f4f6f9;
+}
+
+/* Sidebar */
+
+.sidebar{
+width:220px;
+height:100vh;
+background:#1f2a38;
+position:fixed;
+color:white;
+padding-top:20px;
+}
+
+.sidebar h4{
+text-align:center;
+margin-bottom:30px;
+}
+
+.sidebar a{
+display:block;
+color:white;
+padding:12px;
+text-decoration:none;
+}
+
+.sidebar a:hover{
+background:#34495e;
+}
+
+/* Main */
+
+.main{
+margin-left:220px;
+padding:30px;
+}
+
+.table-box{
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0px 0px 10px rgba(0,0,0,0.1);
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- Sidebar -->
+
+<div class="sidebar">
+
+<h4>SABA System</h4>
+
+<a href="/admin">Dashboard</a>
+
+<a href="/student_list">Student List</a>
+
+<a href="/teacher_list">Teacher List</a>
+
+<a href="/add_student">Add Student</a>
+
+<a href="/add_teacher">Add Teacher</a>
+
+<a href="/logout">Logout</a>
+
+</div>
+
+
+<!-- Main Content -->
+
+<div class="main">
+
+<h2>Teacher List</h2>
+
+<div class="table-box">
+
+<table class="table table-bordered">
+
+<tr>
+<th>Name</th>
+<th>Email</th>
+<th>Department</th>
+</tr>
+
+{% for t in teachers %}
+
+<tr>
+
+<td>{{ t[0] }}</td>
+<td>{{ t[1] }}</td>
+<td>{{ t[2] }}</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+</div>
+
+</body>
+</html>

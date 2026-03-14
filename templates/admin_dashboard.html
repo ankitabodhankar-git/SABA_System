@@ -83,16 +83,12 @@ background:#e67e22;
 <div class="sidebar">
 
 <h4>SABA System</h4>
+
 <a href="/admin">Dashboard</a>
-
 <a href="/student_list">Student List</a>
-
 <a href="/teacher_list">Teacher List</a>
-
 <a href="/add_student">Add Student</a>
-
 <a href="/add_teacher">Add Teacher</a>
-
 <a href="/logout">Logout</a>
 
 </div>
@@ -111,7 +107,6 @@ background:#e67e22;
 <div class="card-box students">
 
 <h5>Total Students</h5>
-
 <h2>{{ students|length }}</h2>
 
 </div>
@@ -123,7 +118,6 @@ background:#e67e22;
 <div class="card-box dept">
 
 <h5>Total Departments</h5>
-
 <h2>{{ dept_count|length }}</h2>
 
 </div>
@@ -135,7 +129,6 @@ background:#e67e22;
 <div class="card-box teachers">
 
 <h5>Total Teachers</h5>
-
 <h2>{{ teacher_count }}</h2>
 
 </div>
@@ -161,7 +154,7 @@ background:#e67e22;
 let departments=[];
 let counts=[];
 
-{ % for d in dept_count % }
+{% for d in dept_count %}
 
 departments.push("{{ d[0] }}");
 counts.push({{ d[1] }});
@@ -170,15 +163,18 @@ counts.push({{ d[1] }});
 
 const ctx=document.getElementById('deptChart');
 
- new Chart(ctx,{
+new Chart(ctx,{
 
-  type:'bar',
+type:'bar',
 
 data:{
 labels:departments,
 
 datasets:[{
-label:'Students per Department',data:counts,backgroundColor:'#3498db'}]
+label:'Students per Department',
+data:counts,
+backgroundColor:'#3498db'
+}]
 },
 
 options:{

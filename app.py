@@ -202,23 +202,12 @@ def student_list():
     conn = sqlite3.connect("saba.db")
     cursor = conn.cursor()
 
-    cursor.execute("SELECT name,department,year FROM users WHERE role='student'")
-    data = cursor.fetchall()
+    cursor.execute("SELECT name,email,department,year FROM users WHERE role='student'")
+    students = cursor.fetchall()
 
     conn.close()
 
-    students_by_dept = {}
-
-    for name, dept, year in data:   # FIXED
-        if dept not in students_by_dept:
-            students_by_dept[dept] = []
-        students_by_dept[dept].append(name)
-
-    return render_template(
-        "student_list.html",
-        students_by_dept=students_by_dept
-    )
-
+    return render_template("student_list.html", students=students)
 
 # ---------------- TEACHER LIST ----------------
 @app.route("/teacher_list")
@@ -379,6 +368,8 @@ def change_password():
         return "Wrong current password"
 
     return render_template("change_password.html")
+
+
 # ---------------- LOGOUT ----------------
 @app.route("/logout")
 def logout():

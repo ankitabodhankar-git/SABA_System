@@ -342,39 +342,60 @@ def student_dashboard():
     return render_template("student_dashboard.html",
                            performance=performance)
 
+# ---------------- MY STUDENTS LIST----------------
+@app.route("/students")
+def students_page():
+    if session.get("role") != "teacher":
+        return redirect("/")
 
+    conn = sqlite3.connect("saba.db")
+    cursor = conn.cursor()
 
-@app.route("/change_password", methods=["GET","POST"])
+    # Get teacher's department
+    cursor.execute("SELECT department FROM users WHERE id=?", (session["user_id"],))
+    teacher_dept = cursor.fetchone()[0]
+
+    # Fetch only students from this department
+    cursor.execute("SELECT id, name FROM users WHERE role='student' AND department=?", (teacher_dept,))
+    students = cursor.fetchall()
+
+    conn.close()
+
+    return render_template("students.html", students=students, teacher_dept=teacher_dept)
+
+# ---------------- CHANGE PWD ----------------
+@app.route("/change_password", methods=["GET", "POST"])
 def change_password():
-
-    if "user_id" not in session:
+    if not session.get("user_id"):
         return redirect("/")
 
     if request.method == "POST":
-
-        old_password = request.form["old_password"]
-        new_password = request.form["new_password"]
+        old_pwd = request.form["old_password"]
+        new_pwd = request.form["new_password"]
 
         conn = sqlite3.connect("saba.db")
         cursor = conn.cursor()
 
-        cursor.execute("SELECT password FROM users WHERE id=?",
-                       (session["user_id"],))
+        # Verify old password
+        cursor.execute("SELECT password FROM users WHERE id=?", (session["user_id"],))
+        current_pwd = cursor.fetchone()[0]
 
-        user = cursor.fetchone()
-
-        if user and user[0] == old_password:
-
-            cursor.execute("UPDATE users SET password=? WHERE id=?",
-                           (new_password,session["user_id"]))
-
-            conn.commit()
+        if current_pwd != old_pwd:
             conn.close()
+            return render_template("change_password.html", error="Old password incorrect")
 
-            return redirect("/")
-
+        # Update new password
+        cursor.execute("UPDATE users SET password=? WHERE id=?", (new_pwd, session["user_id"]))
+        conn.commit()
         conn.close()
-        return "Wrong current password"
+
+        # Redirect based on role
+        if session.get("role") == "teacher":
+            return redirect("/teacher")
+        elif session.get("role") == "student":
+            return redirect("/student_dashboard")
+        else:
+            return redirect("/")
 
     return render_template("change_password.html")
 

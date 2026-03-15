@@ -25,9 +25,11 @@
 <div class="sidebar">
     <h4 class="text-center">Teacher Panel</h4>
     <a href="/teacher"><i class="bi bi-speedometer2"></i> Dashboard</a>
+    <a href="/students"><i class="bi bi-people"></i> My Students</a>
     <a href="/change_password"><i class="bi bi-key"></i> Change Password</a>
     <a href="/logout"><i class="bi bi-box-arrow-right"></i> Logout</a>
 </div>
+
 
 <!-- Main -->
 <div class="main">
@@ -72,29 +74,12 @@
         </div>
     </div>
 
-    <!-- Student List -->
-    <h4 class="mt-4">My Students</h4>
-    <table class="table table-striped">
-        <thead>
-            <tr><th>Name</th><th>Action</th></tr>
-        </thead>
-        <tbody>
-            {% for s in students %}
-            <tr>
-                <td>{{ s[1] }}</td>
-                <td>
-                    <a href="/add_performance?student_id={{ s[0] }}" 
-                       class="btn btn-sm btn-primary">Add Performance</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+   
 
     <!-- Performance Chart -->
     <h4 class="mt-4">Class Performance Analysis</h4>
     <div class="mt-4" style="max-width:400px; margin:auto;">
-    <canvas id="performanceChart" width="400" height="400"></canvas>
+    <canvas id="performanceChart" width="250" height="250"></canvas>
 </div>
 
 </div>

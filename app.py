@@ -240,6 +240,31 @@ def teacher_list():
 
     return render_template("teacher_list.html", teachers=teachers)
 
+# ---------------- RISKK STUDENTS LIST ----------------
+@app.route("/risk_students")
+def risk_students():
+    if session.get("role") != "teacher":
+        return redirect("/")
+
+    conn = sqlite3.connect("saba.db")
+    cursor = conn.cursor()
+
+    # Teacher's department
+    cursor.execute("SELECT department FROM users WHERE id=?", (session["user_id"],))
+    teacher_dept = cursor.fetchone()[0]
+
+    # Fetch only students with "At Risk" status
+    cursor.execute("""
+        SELECT u.name, sp.attendance, sp.marks, sp.behaviour, sp.risk_status
+        FROM semester_performance sp
+        JOIN users u ON sp.student_id = u.id
+        WHERE u.department=? AND sp.risk_status='At Risk'
+    """, (teacher_dept,))
+    risk_students = cursor.fetchall()
+
+    conn.close()
+
+    return render_template("risk_students.html", students=risk_students, teacher_dept=teacher_dept)
 
 # ---------------- ADD TEACHER ----------------
 @app.route("/add_teacher", methods=["GET","POST"])

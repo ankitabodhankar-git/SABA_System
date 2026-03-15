@@ -1,190 +1,181 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <title>Admin Dashboard</title>
 
-<title>Admin Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 
-<link rel="stylesheet"
-href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<style>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            background: #f4f6f9;
+        }
 
-body{
-margin:0;
-font-family:Arial;
-background:#f4f6f9;
-}
+        /* Sidebar */
+        .sidebar {
+            width: 220px;
+            height: 100vh;
+            background: #1f2a38;
+            position: fixed;
+            color: white;
+            padding-top: 20px;
+        }
 
-/* Sidebar */
+        .sidebar h4 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
 
-.sidebar{
-width:220px;
-height:100vh;
-background:#1f2a38;
-position:fixed;
-color:white;
-padding-top:20px;
-}
+        .sidebar a {
+            display: block;
+            color: white;
+            padding: 12px;
+            text-decoration: none;
+        }
 
-.sidebar h4{
-text-align:center;
-margin-bottom:30px;
-}
+        .sidebar a:hover {
+            background: #34495e;
+        }
 
-.sidebar a{
-display:block;
-color:white;
-padding:12px;
-text-decoration:none;
-}
+        /* Main */
+        .main {
+            margin-left: 220px;
+            padding: 30px;
+        }
 
-.sidebar a:hover{
-background:#34495e;
-}
+        /* Cards */
+        .card-box {
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+            text-align: center;
+        }
 
-/* Main */
+        .students {
+            background: #0d6efd; /* Bootstrap primary */
+        }
 
-.main{
-margin-left:220px;
-padding:30px;
-}
+        .dept {
+            background: #198754; /* Bootstrap success */
+        }
 
-/* Cards */
-
-.card-box{
-padding:20px;
-border-radius:10px;
-color:white;
-text-align:center;
-}
-
-.students{
-background:#3498db;
-}
-
-.dept{
-background:#2ecc71;
-}
-
-.teachers{
-background:#e67e22;
-}
-
-</style>
-
+        .teachers {
+            background: #fd7e14; /* Bootstrap orange */
+        }
+    </style>
 </head>
 
 <body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h4>SABA System</h4>
+        <a href="/admin"><i class="bi bi-house-door"></i> Dashboard</a>
+        <a href="/student_list"><i class="bi bi-people"></i> Student List</a>
+        <a href="/teacher_list"><i class="bi bi-person-badge"></i> Teacher List</a>
+        <a href="/add_student"><i class="bi bi-person-plus"></i> Add Student</a>
+        <a href="/add_teacher"><i class="bi bi-person-workspace"></i> Add Teacher</a>
+        <a href="/logout"><i class="bi bi-box-arrow-right"></i> Logout</a>
+    </div>
 
-<!-- Sidebar -->
+    <!-- Main Content -->
+    <div class="main">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2>Admin Dashboard</h2>
+            <span class="badge bg-secondary">Welcome, Admin</span>
+        </div>
 
-<div class="sidebar">
+        <div class="row mt-4">
+            <div class="col-md-4 col-12 mb-3">
+                <div class="card-box students">
+                    <h5>Total Students</h5>
+                    <h2>{{ students|length }}</h2>
+                </div>
+            </div>
 
-<h4>SABA System</h4>
+            <div class="col-md-4 col-12 mb-3">
+                <div class="card-box dept">
+                    <h5>Total Departments</h5>
+                    <h2>{{ dept_count|length }}</h2>
+                </div>
+            </div>
 
-<a href="/admin">Dashboard</a>
-<a href="/student_list">Student List</a>
-<a href="/teacher_list">Teacher List</a>
-<a href="/add_student">Add Student</a>
-<a href="/add_teacher">Add Teacher</a>
-<a href="/logout">Logout</a>
+            <div class="col-md-4 col-12 mb-3">
+                <div class="card-box teachers">
+                    <h5>Total Teachers</h5>
+                    <h2>{{ teacher_count }}</h2>
+                </div>
+            </div>
+        </div>
 
-</div>
+        <hr>
 
+        <h4>Department Analysis</h4>
+        <div class="row">
+            <div class="col-12 col-md-6">
+                <canvas id="deptChart"></canvas>
+            </div>
+        </div>
+    </div>
 
-<!-- Main Content -->
+    <script>
+        var departments = [];
+        var counts = [];
 
-<div class="main">
+        {% for d in dept_count %}
+        departments.push("{{ d[0] }}");
+        counts.push({{ d[1] }});
+        {% endfor %}
 
-<h2>Admin Dashboard</h2>
+        var ctx = document.getElementById("deptChart");
 
-<div class="row mt-4">
-
-<div class="col-md-4">
-
-<div class="card-box students">
-
-<h5>Total Students</h5>
-<h2>{{ students|length }}</h2>
-
-</div>
-
-</div>
-
-<div class="col-md-4">
-
-<div class="card-box dept">
-
-<h5>Total Departments</h5>
-<h2>{{ dept_count|length }}</h2>
-
-</div>
-
-</div>
-
-<div class="col-md-4">
-
-<div class="card-box teachers">
-
-<h5>Total Teachers</h5>
-<h2>{{ teacher_count }}</h2>
-
-</div>
-
-</div>
-
-</div>
-
-
-<hr>
-
-<h4>Department Analysis</h4>
-
-<div style="width:400px; height:250px;">
-<canvas id="deptChart"></canvas>
-</div>
-
-</div>
-
-
-<script>
-
-let departments=[];
-let counts=[];
-
-{% for d in dept_count %}
-
-departments.push("{{ d[0] }}");
-counts.push({{ d[1] }});
-
-{% endfor %}
-
-const ctx=document.getElementById('deptChart');
-
-new Chart(ctx,{
-
-type:'bar',
-
-data:{
-labels:departments,
-
-datasets:[{
-label:'Students per Department',
-data:counts,
-backgroundColor:'#3498db'
-}]
-},
-
-options:{
-responsive:true,
-maintainAspectRatio:false
-}
-
-});
-
-</script>
-
+        new Chart(ctx, {
+            type: "bar",
+            data: {
+                labels: departments,
+                datasets: [{
+                    label: "Students per Department",
+                    data: counts,
+                    backgroundColor: [
+                        "#a8d0ff",
+                        "#b9e6c3",
+                        "#ffd6a5",
+                        "#f9b5d0",
+                        "#d0c4ff"
+                    ],
+                    borderColor: [
+                        "#6aa8ff",
+                        "#7bd19a",
+                        "#ffb866",
+                        "#e88bb0",
+                        "#9d8cff"
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: {
+                        enabled: true
+                    },
+                    legend: {
+                        display: true,
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 </html>

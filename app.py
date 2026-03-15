@@ -158,27 +158,34 @@ def add_student():
 # ---------------- TEACHER DASHBOARD ----------------
 @app.route("/teacher")
 def teacher_dashboard():
-
     if session.get("role") != "teacher":
         return redirect("/")
 
     conn = sqlite3.connect("saba.db")
     cursor = conn.cursor()
 
-    cursor.execute("SELECT COUNT(*) FROM users WHERE role='student'")
-    total_students = cursor.fetchone()[0]
+    # Get teacher's department
+    cursor.execute("SELECT department FROM users WHERE id=?", (session["user_id"],))
+    teacher_dept = cursor.fetchone()[0]
 
-    cursor.execute("SELECT COUNT(*) FROM semester_performance WHERE risk_status='Good'")
-    good = cursor.fetchone()[0]
-
-    cursor.execute("SELECT COUNT(*) FROM semester_performance WHERE risk_status='Average'")
-    avg = cursor.fetchone()[0]
-
-    cursor.execute("SELECT COUNT(*) FROM semester_performance WHERE risk_status='At Risk'")
-    risk = cursor.fetchone()[0]
-
-    cursor.execute("SELECT id,name,department FROM users WHERE role='student'")
+    # Students only from this department
+    cursor.execute("SELECT id,name FROM users WHERE role='student' AND department=?", (teacher_dept,))
     students = cursor.fetchall()
+    total_students = len(students)
+
+    # Performance counts only for this department
+    cursor.execute("""
+        SELECT risk_status, COUNT(*)
+        FROM semester_performance sp
+        JOIN users u ON sp.student_id = u.id
+        WHERE u.department=?
+        GROUP BY risk_status
+    """, (teacher_dept,))
+    stats = dict(cursor.fetchall())
+
+    good = stats.get("Good", 0)
+    avg = stats.get("Average", 0)
+    risk = stats.get("At Risk", 0)
 
     conn.close()
 
@@ -188,8 +195,10 @@ def teacher_dashboard():
         good=good,
         avg=avg,
         risk=risk,
-        students=students
+        students=students,
+        teacher_dept=teacher_dept
     )
+
 
 
 # ---------------- STUDENT LIST ----------------
@@ -243,7 +252,7 @@ def add_teacher():
 
         name = request.form["name"]
         # auto geneted email
-        username = name.lower().replace(" ", ".")
+        username = name.lower().replace(" " ,"")
         email = username + "@asmedu.org"
         password = request.form["password"]
         department = request.form["department"]

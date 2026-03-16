@@ -141,6 +141,7 @@ def add_student():
 
         conn = sqlite3.connect("saba.db")
         cursor = conn.cursor()
+        
 
         cursor.execute("""
         INSERT INTO users (name,email,password,role,department,year)
@@ -354,8 +355,23 @@ def student_dashboard():
     conn = sqlite3.connect("saba.db")
     cursor = conn.cursor()
 
+    # student name
+    cursor.execute(
+        "SELECT name FROM users WHERE id=?",
+        (session["user_id"],)
+    )
+
+    student = cursor.fetchone()
+    student_name = student[0]
+
+    # performance data
     cursor.execute("""
-    SELECT semester,attendance,marks,behaviour,overall_score,risk_status
+    SELECT semester,
+           attendance,
+           marks,
+           behaviour,
+           overall_score,
+           risk_status
     FROM semester_performance
     WHERE student_id=?
     """, (session["user_id"],))
@@ -364,8 +380,14 @@ def student_dashboard():
 
     conn.close()
 
-    return render_template("student_dashboard.html",
-                           performance=performance)
+    if not performance:
+        performance = [(0,0,0,0,0,"No Data")]
+
+    return render_template(
+        "student_dashboard.html",
+        student_name=student_name,
+        performance=performance
+    )
 
 # ---------------- MY STUDENTS LIST----------------
 @app.route("/students")

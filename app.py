@@ -128,30 +128,47 @@ def add_student():
 
     if request.method == "POST":
 
-        name = request.form["name"]
-        # auto email generated
-        username = name.lower().replace(" ", ".")
-        email = username + "@asmedu.org"
-        password = request.form["password"]
-        department = request.form["department"]
-        year = request.form["year"]
-
-        if not email.endswith("@asmedu.org"):
-            return "Only college email allowed"
-
         conn = sqlite3.connect("saba.db")
         cursor = conn.cursor()
-        
 
-        cursor.execute("""
-        INSERT INTO users (name,email,password,role,department,year)
-        VALUES (?,?,?,?,?,?)
-        """,(name,email,password,"student",department,year))
+        password = request.form["password"]
+
+        generated_emails = []   # store emails
+
+        bulk_data = request.form.get("bulk_data")
+
+        if bulk_data:
+
+            lines = bulk_data.strip().split("\n")
+
+            for line in lines:
+
+                parts = line.split(",")
+
+                if len(parts) == 3:
+
+                    name = parts[0].strip()
+                    dept = parts[1].strip()
+                    year = parts[2].strip()
+
+                    username = name.lower().replace(" ", "")
+                    email = username + str(abs(hash(name)))[:3] + "@asmedu.org"
+
+                    try:
+                        cursor.execute("""
+                        INSERT INTO users (name,email,password,role,department,year)
+                        VALUES (?,?,?,?,?,?)
+                        """,(name,email,password,"student",dept,year))
+
+                        generated_emails.append(email)
+
+                    except:
+                        pass
 
         conn.commit()
         conn.close()
 
-        return render_template("add_student.html", generated_email=email)
+        return render_template("add_student.html", emails=generated_emails)
 
     return render_template("add_student.html")
 

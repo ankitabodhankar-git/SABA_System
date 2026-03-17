@@ -116,11 +116,11 @@ new Chart(ctx, {
         labels: ["Attendance","Marks","Behaviour"],
         datasets: [{
             label: "Performance",
-            data: [{{ performance[0][1]|round(0) }}, {{ performance[0][2]|round(0) }}, {{ performance[0][3]|round(0) }}],
-            backgroundColor: ["#1565c0","#2e7d32","#ef6c00"]
+            data: [{{ performance[0][1]|round(0) }}, {{ performance[0][2]|round(0) }}, {{ performance[0][3]|round(0) }} ],
+            backgroundColor: ["#1565c0","#2e7d32","#ef6c00"]  
         }]
     },
-    options: {
+    options : {
         responsive:true,
         maintainAspectRatio:false,
         animation:{ duration:1000 },

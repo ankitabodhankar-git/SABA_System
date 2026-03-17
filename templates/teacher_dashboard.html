@@ -8,81 +8,102 @@
     href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body { background: #f4f6f9; }
+        body { background:#f8f9fa; font-family:'Segoe UI', Arial, sans-serif; }
+
+        /* Sidebar */
         .sidebar {
-            width: 220px; height: 100vh;
-            background: #1f2a38; position: fixed;
-            color: white; padding-top: 20px;
+            width:240px; height:100vh;
+            background:#212529; position:fixed;
+            color:white; padding-top:20px;
+            box-shadow:2px 0 8px rgba(0,0,0,0.2);
         }
-        .sidebar a { display:block; color:white; padding:12px; text-decoration:none; }
-        .sidebar a:hover { background:#34495e; }
-        .main { margin-left:220px; padding:30px; }
+        .sidebar h4 { text-align:center; margin-bottom:25px; font-weight:600; color:#f8f9fa; }
+        .sidebar a {
+            display:block; color:#adb5bd; padding:12px 20px;
+            text-decoration:none; transition:0.3s; font-weight:500;
+        }
+        .sidebar a:hover {
+            background:#343a40; color:#fff; border-left:4px solid #0d6efd;
+        }
+
+        /* Main */
+        .main { margin-left:240px; padding:30px; min-height:100vh; }
+
+        /* Cards */
+        .card-box {
+            padding:25px; border-radius:12px; color:white; text-align:center;
+            transition:0.3s; font-weight:600; box-shadow:0 4px 10px rgba(0,0,0,0.15);
+        }
+        .card-box:hover { transform:translateY(-5px); }
+
+        .students { background:linear-gradient(135deg,#0d6efd,#0a58ca); }
+        .good { background:linear-gradient(135deg,#198754,#146c43); }
+        .average { background:linear-gradient(135deg,#ffc107,#e0a800); color:#212529; }
+        .risk { background:linear-gradient(135deg,#dc3545,#b02a37); }
+
+        .white-card {
+            background:white; border-radius:12px; padding:25px;
+            box-shadow:0px 4px 12px rgba(0,0,0,0.1);
+        }
+        .white-card h5 { font-weight:600; margin-bottom:15px; }
     </style>
 </head>
 <body>
 
 <!-- Sidebar -->
 <div class="sidebar">
-    <h4 class="text-center">Teacher Panel</h4>
+    <h4>Teacher Panel</h4>
     <a href="/teacher"><i class="bi bi-speedometer2"></i> Dashboard</a>
     <a href="/students"><i class="bi bi-people"></i> My Students</a>
-    <a href="/change_password"><i class="bi bi-key"></i> Change Password</a>
     <a href="/risk_students"><i class="bi bi-exclamation-triangle"></i> Risk Students</a>
+    <a href="/change_password"><i class="bi bi-key"></i> Change Password</a>
     <a href="/logout"><i class="bi bi-box-arrow-right"></i> Logout</a>
 </div>
 
-
 <!-- Main -->
 <div class="main">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Welcome, Class Teacher ({{ teacher_dept }})</h2>
-        
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">Welcome, Class Teacher ({{ teacher_dept }})</h2>
+        <span class="badge bg-dark fs-6">Teacher Dashboard</span>
     </div>
 
-    <!-- Stats -->
-    <div class="row text-center">
-        <div class="col-md-3 mb-3">
-            <div class="card bg-primary text-white">
-                <div class="card-body">
-                    <h5>Total Students</h5>
-                    <h2>{{ total_students }}</h2>
-                </div>
+    <!-- Stats Cards -->
+    <div class="row g-3 text-center">
+        <div class="col-md-3">
+            <div class="card-box students">
+                <i class="bi bi-people fs-2 mb-2"></i>
+                <h5>Total Students</h5>
+                <h2>{{ total_students }}</h2>
             </div>
         </div>
-        <div class="col-md-3 mb-3">
-            <div class="card bg-success text-white">
-                <div class="card-body">
-                    <h5>Good</h5>
-                    <h2>{{ good }}</h2>
-                </div>
+        <div class="col-md-3">
+            <div class="card-box good">
+                <i class="bi bi-check-circle fs-2 mb-2"></i>
+                <h5>Good</h5>
+                <h2>{{ good }}</h2>
             </div>
         </div>
-        <div class="col-md-3 mb-3">
-            <div class="card bg-warning text-dark">
-                <div class="card-body">
-                    <h5>Average</h5>
-                    <h2>{{ avg }}</h2>
-                </div>
+        <div class="col-md-3">
+            <div class="card-box average">
+                <i class="bi bi-hourglass-split fs-2 mb-2"></i>
+                <h5>Average</h5>
+                <h2>{{ avg }}</h2>
             </div>
         </div>
-        <div class="col-md-3 mb-3">
-            <div class="card bg-danger text-white">
-                <div class="card-body">
-                    <h5>At Risk</h5>
-                    <h2>{{ risk }}</h2>
-                </div>
+        <div class="col-md-3">
+            <div class="card-box risk">
+                <i class="bi bi-exclamation-triangle fs-2 mb-2"></i>
+                <h5>At Risk</h5>
+                <h2>{{ risk }}</h2>
             </div>
         </div>
     </div>
-
-   
 
     <!-- Performance Chart -->
-    <h4 class="mt-4">Class Performance Analysis</h4>
-    <div class="mt-4" style="max-width:400px; margin:auto;">
-    <canvas id="performanceChart" width="250" height="250"></canvas>
-</div>
-
+    <div class="white-card mt-4" style="max-width:500px; margin:auto;">
+        <h5>Class Performance Analysis</h5>
+        <canvas id="performanceChart" height="250"></canvas>
+    </div>
 </div>
 
 <script>
@@ -96,12 +117,23 @@
             labels: categories,
             datasets: [{
                 data: counts,
-                backgroundColor: ["#198754", "#ffc107", "#dc3545"]
+                backgroundColor: [
+                    "#4bc0c0", // Aqua
+                    "#ffcd56", // Bright Yellow
+                    "#ff6384"  // Bright Pink
+                ]
             }]
         },
         options: {
             responsive: true,
-            plugins: { legend: { position: "bottom" } }
+            plugins: {
+                legend: { position: "bottom" },
+                title: {
+                    display: true,
+                    text: "Performance Distribution",
+                    font: { size: 16 }
+                }
+            }
         }
     });
 </script>

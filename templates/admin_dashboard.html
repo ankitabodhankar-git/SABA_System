@@ -1,176 +1,186 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Admin Dashboard</title>
+<title>Admin Dashboard</title>
 
-    <!-- Bootstrap -->
-    <link rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 
-    <!-- Icons -->
-    <link rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
-    <!-- Chart -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <style>
-    body {
-        margin:0;
-        font-family: 'Segoe UI', Arial, sans-serif;
-        background:#f8f9fa;
-    }
+<style>
 
-    /* Sidebar */
-    .sidebar {
-        width:240px;
-        height:100vh;
-        background:#212529;
-        position:fixed;
-        color:white;
-        padding-top:20px;
-        box-shadow:2px 0 8px rgba(0,0,0,0.2);
-    }
+body{
+margin:0;
+font-family:'Segoe UI',sans-serif;
+background:#f4f6f9;
+}
 
-    .sidebar h4 {
-        text-align:center;
-        margin-bottom:25px;
-        font-weight:600;
-        color:#f8f9fa;
-    }
+/* Sidebar */
+.sidebar{
+width:240px;
+height:100vh;
+background:#1f2a38;
+position:fixed;
+color:white;
+padding-top:20px;
+}
 
-    .sidebar a {
-        display:block;
-        color:#adb5bd;
-        padding:12px 20px;
-        text-decoration:none;
-        transition:0.3s;
-        font-weight:500;
-    }
+.sidebar h4{
+text-align:center;
+margin-bottom:25px;
+}
 
-    .sidebar a:hover {
-        background:#343a40;
-        color:#fff;
-        border-left:4px solid #0d6efd;
-    }
+.sidebar a{
+display:block;
+color:#adb5bd;
+padding:12px 20px;
+text-decoration:none;
+transition:0.3s;
+}
 
-    /* Main */
-    .main {
-        margin-left:240px;
-        padding:30px;
-        min-height:100vh;
-    }
+.sidebar a:hover{
+background:#34495e;
+color:white;
+border-left:4px solid #4facfe;
+}
 
-    /* Cards */
-    .card-box {
-        padding:25px;
-        border-radius:12px;
-        color:white;
-        text-align:center;
-        transition:0.3s;
-        font-weight:600;
-        box-shadow:0 4px 10px rgba(0,0,0,0.15);
-    }
+/* Main */
+.main{
+margin-left:240px;
+padding:30px;
+}
 
-    .card-box:hover {
-        transform:translateY(-5px);
-    }
+/* Cards */
+.card-box{
+padding:25px;
+border-radius:15px;
+color:white;
+text-align:center;
+transition:0.3s;
+box-shadow:0 6px 15px rgba(0,0,0,0.1);
+}
 
-    .students { background:linear-gradient(135deg,#0d6efd,#0a58ca); }
-    .dept { background:linear-gradient(135deg,#198754,#146c43); }
-    .teachers { background:linear-gradient(135deg,#fd7e14,#d9480f); }
+.card-box:hover{
+transform:translateY(-8px);
+box-shadow:0 15px 30px rgba(0,0,0,0.2);
+}
 
-    .white-card {
-        background:white;
-        border-radius:12px;
-        padding:25px;
-        box-shadow:0px 4px 12px rgba(0,0,0,0.1);
-    }
+.students{ background:linear-gradient(to right,#4facfe,#00f2fe);}
+.dept{ background:linear-gradient(to right,#43e97b,#38f9d7);}
+.teachers{ background:linear-gradient(to right,#fa709a,#fee140);}
 
-    .white-card h5 {
-        font-weight:600;
-        margin-bottom:15px;
-    }
-    </style>
+/* White cards */
+.white-card{
+background:white;
+padding:20px;
+border-radius:15px;
+box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+</style>
 </head>
 
 <body>
 
 <!-- Sidebar -->
 <div class="sidebar">
-    <h4>SABA System</h4>
-    <a href="/admin"><i class="bi bi-house"></i> Dashboard</a>
-    <a href="/student_list"><i class="bi bi-people"></i> Student List</a>
-    <a href="/teacher_list"><i class="bi bi-person-badge"></i> Teacher List</a>
-    <a href="/add_student"><i class="bi bi-person-plus"></i> Add Student</a>
-    <a href="/add_teacher"><i class="bi bi-person-workspace"></i> Add Teacher</a>
-    <a href="/logout"><i class="bi bi-box-arrow-right"></i> Logout</a>
+<h4>SABA System</h4>
+
+<a href="/admin"><i class="bi bi-house"></i> Dashboard</a>
+<a href="/student_list"><i class="bi bi-people"></i> Student List</a>
+<a href="/teacher_list"><i class="bi bi-person-badge"></i> Teacher List</a>
+<a href="/add_student"><i class="bi bi-person-plus"></i> Add Student</a>
+<a href="/add_teacher"><i class="bi bi-person-workspace"></i> Add Teacher</a>
+<a href="/logout"><i class="bi bi-box-arrow-right"></i> Logout</a>
+
 </div>
 
 <!-- Main -->
 <div class="main">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold">Admin Dashboard</h2>
-        <span class="badge bg-dark fs-6">Welcome, Admin</span>
-    </div>
-
-    <!-- Cards -->
-    <div class="row g-3">
-        <div class="col-md-4">
-            <div class="card-box students">
-                <i class="bi bi-people fs-2 mb-2"></i>
-                <h5>Total Students</h5>
-                <h2>{{ students|length }}</h2>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card-box dept">
-                <i class="bi bi-building fs-2 mb-2"></i>
-                <h5>Total Departments</h5>
-                <h2>{{ dept_count|length }}</h2>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card-box teachers">
-                <i class="bi bi-person-workspace fs-2 mb-2"></i>
-                <h5>Total Teachers</h5>
-                <h2>{{ teacher_count }}</h2>
-            </div>
-        </div>
-    </div>
-
-    <br>
-
-    <!-- Graph + Stats -->
-    <div class="row g-3">
-        <!-- Graph -->
-        <div class="col-md-8">
-            <div class="white-card">
-                <h5>Department Analysis</h5>
-                <div style="height:300px;">
-                    <canvas id="deptChart"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <!-- Side Info -->
-        <div class="col-md-4">
-            <div class="white-card">
-                <h5>System Insights</h5>
-                <p>📊 Total Students: <span class="badge bg-primary">{{ students|length }}</span></p>
-                <p>🏫 Departments: <span class="badge bg-success">{{ dept_count|length }}</span></p>
-                <p>👨‍🏫 Teachers: <span class="badge bg-warning">{{ teacher_count }}</span></p>
-                <hr>
-                
-            </div>
-        </div>
-    </div>
+<div class="d-flex justify-content-between align-items-center mb-4">
+<h2 class="fw-bold">Admin Dashboard</h2>
+<span class="badge bg-dark">Live Data</span>
 </div>
 
+<!-- KPI Cards -->
+<div class="row g-3">
+
+<div class="col-md-4">
+<div class="card-box students">
+<i class="bi bi-people fs-2"></i>
+<h5>Total Students</h5>
+<h2>{{ students|length }}</h2>
+</div>
+</div>
+
+<div class="col-md-4">
+<div class="card-box dept">
+<i class="bi bi-building fs-2"></i>
+<h5>Total Departments</h5>
+<h2>{{ dept_count|length }}</h2>
+</div>
+</div>
+
+<div class="col-md-4">
+<div class="card-box teachers">
+<i class="bi bi-person-workspace fs-2"></i>
+<h5>Total Teachers</h5>
+<h2>{{ teacher_count }}</h2>
+</div>
+</div>
+
+</div>
+
+<br>
+
+<!-- Charts + Insights -->
+<div class="row g-3">
+
+<!-- Bar Chart -->
+<div class="col-md-8">
+<div class="white-card">
+<h5>Department Analysis</h5>
+<div style="height:300px;">
+<canvas id="deptChart"></canvas>
+</div>
+</div>
+</div>
+
+<!-- Insights -->
+<div class="col-md-4">
+<div class="white-card">
+<h5>System Insights</h5>
+
+<p>Total Students:
+<span class="badge bg-primary">{{ students|length }}</span></p>
+
+<p>Departments:
+<span class="badge bg-success">{{ dept_count|length }}</span></p>
+
+<p>Teachers:
+<span class="badge bg-warning">{{ teacher_count }}</span></p>
+
+<hr>
+
+<p class="text-muted">
+✔ Highest activity in main department<br>
+✔ Balanced distribution<br>
+✔ System performing efficiently
+</p>
+
+</div>
+</div>
+
+</div>
+
+<br>
 <script>
+
 var departments = [];
 var counts = [];
 
@@ -179,55 +189,40 @@ departments.push("{{ d[0] }}");
 counts.push({{ d[1] }});
 {% endfor %}
 
-var ctx = document.getElementById("deptChart");
+const ctx = document.getElementById("deptChart").getContext("2d");
+
+const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+gradient.addColorStop(0, "#2563eb");
+gradient.addColorStop(1, "#1e3a8a");
 
 new Chart(ctx, {
     type: "bar",
     data: {
         labels: departments,
         datasets: [{
-            label: "Students per Department",
             data: counts,
-            backgroundColor: [
-                "#ff6384", // Bright Pink
-                "#36a2eb", // Sky Blue
-                "#ffcd56", // Bright Yellow
-                "#4bc0c0", // Aqua
-                "#9966ff", // Bright Purple
-                "#ff9f40"  // Orange
-            ],
-            borderRadius: 6
+            backgroundColor: gradient,
+            borderRadius: 8
         }]
     },
     options: {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-            legend: { position: "bottom" },
-            title: {
-                display: true,
-                text: "Department-wise Student Distribution",
-                font: { size: 16 }
-            }
+            legend: { display: false }
         },
         scales: {
+            x: {
+                ticks: { color: "#334155" },
+                grid: { display: false }
+            },
             y: {
                 beginAtZero: true,
-                ticks: {
-                    color: "#333",
-                    font: { weight: "bold" }
-                }
-            },
-            x: {
-                ticks: {
-                    color: "#333",
-                    font: { weight: "bold" }
-                }
+                ticks: { color: "#334155" },
+                grid: { color: "#e5e7eb" }
             }
         }
     }
 });
-</script>
 
-</body>
-</html>
+</script>

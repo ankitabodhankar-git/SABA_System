@@ -174,7 +174,7 @@
 var departments = [];
 var counts = [];
 
-{% for d in dept_count % }
+{% for d in dept_count %}
 departments.push("{{ d[0] }}");
 counts.push({{ d[1] }});
 {% endfor %}

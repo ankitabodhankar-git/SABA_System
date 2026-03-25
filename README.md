@@ -91,25 +91,27 @@ Features are being added step by step.
 ## 📊 System Screenshots
 
 ### 🔐 Login Page
-![Login](screenshots/login.png)
+![Login](Screenshots/login.png)
 
 ### 📊 Admin Dashboard
-![Admin](screenshots/admin.png)
+![Admin](Screenshots/admin.png)
 
 ### 📈 Performance Analysis
-![Performance](screenshots/performance.png)
+![Performance](Screenshots/performance.png)
 
 ### 📊 Teacher Dashboard
-![Teacher](screenshots/teacherpg.png)
+![Teacher](Screenshots/teacherpg.png)
 
 ### 🎓 Student Dashboard
-![Student](screenshots/studentpg.png)
+![Student](Screenshots/studentpg.png)
 
 ### ⚠ Risk Students Analysis
-![Risk](screenshots/risk5tup.png)
+![Risk](Screenshots/risk5tup.png)
 
 ### 🔍 Student List
-![Search](screenshots/stuList.png)
+![Search](Screenshots/stuList.png)
+
+
 ## 👩‍💻 Author
 
 Developed as an academic project.

@@ -68,24 +68,15 @@ Admin monitors progress.
 2. Install Flask  
 3. Open project folder  
 4. Run: python app.py
-5.Open browser:
-
-
----
-
-## 📌 Current Status
-
-🚧 Under active development  
-Features are being added step by step.
+5.Open browser: http://127.0.0.1:5000/
 
 ---
 
 ## 🚀 Future Enhancements
-
-- Graphical performance analytics  
+ 
 - Export reports  
-- Password management  
-- Advanced filtering  
+- Advanced analytics using AI/ML
+- Improved UI Designs 
 
 ---
 ## 📊 System Screenshots
@@ -114,7 +105,8 @@ Features are being added step by step.
 
 ## 👩‍💻 Author
 
-Developed as an academic project.
+Developed as an academic project
+
 Ankita Bodhankar
 
 

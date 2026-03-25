@@ -87,7 +87,28 @@ Features are being added step by step.
 - Advanced filtering  
 
 ---
+## 📊 System Screenshots
 
+### 🔐 Login Page
+![Login](screenshots/login.png)
+
+### 📊 Admin Dashboard
+![Admin](screenshots/admin.png)
+
+### 📈 Performance Analysis
+![Performance](screenshots/performance.png)
+
+### 📊 Teacher Dashboard
+![Teacher](screenshots/teacherpg.png)
+
+### 🎓 Student Dashboard
+![Student](screenshots/studentpg.png)
+
+### ⚠ Risk Students Analysis
+![Risk](screenshots/risk5tup.png)
+
+### 🔍 Student List
+![Search](screenshots/stuList.png)
 ## 👩‍💻 Author
 
 Developed as an academic project.

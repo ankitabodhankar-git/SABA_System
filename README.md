@@ -91,10 +91,10 @@ Features are being added step by step.
 ## 📊 System Screenshots
 
 ### 🔐 Login Page
-![Login](Screenshots/login.png)
+![Login](Screenshots/loginpg.png)
 
 ### 📊 Admin Dashboard
-![Admin](Screenshots/admin.png)
+![Admin](Screenshots/adminpg.png)
 
 ### 📈 Performance Analysis
 ![Performance](Screenshots/performance.png)
@@ -106,7 +106,7 @@ Features are being added step by step.
 ![Student](Screenshots/studentpg.png)
 
 ### ⚠ Risk Students Analysis
-![Risk](Screenshots/risk5tup.png)
+![Risk](Screenshots/riskStup.png)
 
 ### 🔍 Student List
 ![Search](Screenshots/stuList.png)

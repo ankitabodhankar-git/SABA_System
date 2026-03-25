@@ -56,7 +56,8 @@ Admin monitors progress.
 - SQLite  
 - HTML  
 - CSS  
-- Bootstrap  
+- Bootstrap
+- javascript 
 - Git & GitHub  
 
 ---

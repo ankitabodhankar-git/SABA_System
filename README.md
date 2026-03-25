@@ -106,7 +106,7 @@ Features are being added step by step.
 ![Student](Screenshots/studentpg.png)
 
 ### ⚠ Risk Students Analysis
-![Risk](Screenshots/riskStup.png)
+![Risk](Screenshots/riskStupg.png)
 
 ### 🔍 Student List
 ![Search](Screenshots/stuList.png)

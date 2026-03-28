@@ -21,7 +21,7 @@ background:#eef2f7;
 
 /* Sidebar */
 .sidebar{
-width:240px;
+width:220px;
 height:100vh;
 background:#0f172a;
 position:fixed;
@@ -29,21 +29,10 @@ color:white;
 padding-top:20px;
 }
 
-.profile{
+.sidebar h4{
 text-align:center;
-padding:20px;
-border-bottom:1px solid #1e293b;
+margin-bottom:30px;
 }
-
-.profile img{
-width:85px;
-height:85px;
-border-radius:50%;
-border:3px solid #38bdf8;
-}
-
-.profile h5{ margin-top:10px; }
-.profile small{ color:#94a3b8; }
 
 .sidebar a{
 display:block;
@@ -59,11 +48,19 @@ color:white;
 
 /* Main */
 .main{
-margin-left:240px;
+margin-left:220px;
 padding:30px;
 }
 
-/* BIG CARDS */
+/* Header */
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:25px;
+}
+
+/* Cards */
 .card-box{
 padding:25px;
 border-radius:16px;
@@ -75,10 +72,10 @@ box-shadow:0 8px 20px rgba(0,0,0,0.1);
 }
 
 .card-box:hover{
-transform:translateY(-8px) scale(1.02);
+transform:translateY(-6px) scale(1.02);
 }
 
-/* COLORS (SOFT GRADIENTS) */
+/* Colors */
 .attendance{
 background:linear-gradient(135deg,#3b82f6,#60a5fa);
 }
@@ -133,26 +130,26 @@ font-weight:500;
 
 <!-- Sidebar -->
 <div class="sidebar">
-
-<div class="profile">
-<img src="{{ student_img or '/static/default.png' }}">
-<h5>{{ student_name }}</h5>
-<small>{{ student_dept }} • {{ student_year }}</small>
-</div>
+<h4>🎓 SABA System</h4>
 
 <a href="/student"><i class="bi bi-speedometer2"></i> Dashboard</a>
 <a href="/change_password"><i class="bi bi-key"></i> Change Password</a>
 <a href="/logout"><i class="bi bi-box-arrow-right"></i> Logout</a>
-
 </div>
 
 <!-- Main -->
 <div class="main">
 
+<!-- Header -->
+<div class="header">
 <h2>Welcome, {{ student_name }} 👋</h2>
+<div class="text-muted">
+{{ student_dept }} • {{ student_year }}
+</div>
+</div>
 
-<!-- BIG CARDS -->
-<div class="row mt-4 g-4">
+<!-- Cards -->
+<div class="row g-4">
 
 <div class="col-md-3 col-6">
 <div class="card-box attendance">
